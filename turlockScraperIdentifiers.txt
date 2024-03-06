@@ -1,0 +1,54 @@
+Turlock scraper.
+
+1. turlockjournal.com/{category}/
+
+    - Identifiers for getting URLs for individual articles.
+        * HTML Tag Type: anchor
+        * class="anvil-images__image-container"
+        * Example html <a class="anvil-images__image-container"/>
+        * Get the href for each of these tags. The href will give URL to individual article.
+
+
+2. Individual article identifiers.
+
+    - Identifier for article Title/Header
+        * HTML Tag type: div
+        * class="anvil-article__title"
+        * Example html <div class="anvil-article__title">title text</div>
+
+    - Identifier for Image of article.
+        * HTML tag type: picture
+        * class="anvil-images__image"
+        * Example html <picture class="anvil-images__image
+            * HTML tag type: img
+            * src="https://imgurl.jpg"
+            * Example html <img src="https://imgurl.jpg">
+
+    - Identifier for Image Description.
+        * HTML tag type: figcaption
+        * class="image-caption anvil-padding-bottom"
+        * Example html <figcaption class="image-caption anvil-padding-bottom">Description Here</figcaption>
+
+    - Identifier for writer/ publisher/ date.
+        * HTML tag type: div
+        * class="column anvil-byline__text"
+            - Writer
+		* HTML tag type: div
+		* class="anvil-byline__link-row"
+		* Example html <div class="anvil-byline__link-row"><span>Writer Here</span></div>
+	    - Publisher
+                * HTML tag type: i
+		* No identifier.
+		* Example html <i>Turlock Journal</i>
+	    - Date
+		* Html tag type: div
+		* class="anvil-byline__date"
+		* Example html <div class="anvil-byline__date">Published: Date</div>
+
+    - Identifier for paragraphs.
+    	* HTML tag type: div
+	* class="rich-text"
+	* Example html: <div class="rich-text"><div class="rich-text"><p>Paragraph</p></div></div>
+	    * HTML tag type: p
+	    * No identifier.
+	    * Example html: <p>paragraph of text</p><p>Next paragraph of text</p>
