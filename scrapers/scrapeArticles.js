@@ -29,15 +29,40 @@ const turlockJournalScraper = async () => {
     // Creating main cheerio object.
     const $ = cheerio.load(articleDOM);
 
-    // Getting needed data.
+    // Getting needed data I could get that wasn't filled with props.
     const source = url;
-    objectToPush["source"] = source;
     const publisher = "Turlock Journal";
-    objectToPush["publisher"] = publisher;
     const heading = $("div.anvil-article__title").text();
-    objectToPush["heading"] = heading.trim();
     const subHeading = $("div.anvil-article__subtitle").text().trim() || "N/A";
+    const paragraphs = [];
+    $("div.rich-text")
+      .find("div.rich-text")
+      .children()
+      .each((i, element) => {
+        const p = $(element);
+        paragraphs.push(p.text().trim());
+      });
+    const filteredParagraphs = paragraphs.filter((p) => p !== "");
+
+    // Getting data that was filled with props, but luckily was in JSON in a span tag.
+    const jsonData = JSON.parse(
+      $("div.anvil-padding-bottom")
+        .find("span")
+        .attr("data-page-tracker-analytics-payload")
+    );
+    const author = jsonData.page_meta.author;
+    const date = jsonData.page_meta.page_created_at_pretty;
+
+    // Saving data to an object I will push to the array of objects.
+    objectToPush["source"] = source;
+    objectToPush["publisher"] = publisher;
+    objectToPush["heading"] = heading.trim();
     objectToPush["subHeading"] = subHeading;
+    objectToPush["author"] = author;
+    objectToPush["date"] = date;
+    objectToPush["paragraphs"] = filteredParagraphs;
+
+    // Getting the image data and saving that to objectToPush
     const image = {};
     $("div.anvil-images__image-container").each((i, element) => {
       const currentImage = $(element)
