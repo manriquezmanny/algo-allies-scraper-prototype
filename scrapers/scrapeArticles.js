@@ -34,7 +34,7 @@ const turlockJournalScraper = async () => {
     const source = urls[i];
     const publisher = "Turlock Journal";
     const heading = $("div.anvil-article__title").text();
-    const subHeading = $("div.anvil-article__subtitle").text().trim() || "N/A";
+    const subHeading = $("div.anvil-article__subtitle").text().trim() || null;
     const paragraphs = [];
     $("div.rich-text")
       .find("div.rich-text")

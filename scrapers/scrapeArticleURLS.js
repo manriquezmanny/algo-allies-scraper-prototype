@@ -13,8 +13,10 @@ const getTurlockURLS = async () => {
   const sportsURL = "https://www.turlockjournal.com/sports/";
 
   // Getting DOM strings to create cheerio objects out of.
-  const newsDOM = await axios.get(newsURL).then((res) => res.data);
-  const sportsDOM = await axios.get(sportsURL).then((res) => res.data);
+  const newsPromise = axios.get(newsURL).then((res) => res.data);
+  const sportsPromise = axios.get(sportsURL).then((res) => res.data);
+
+  const [newsDOM, sportsDOM] = await Promise.all([newsPromise, sportsPromise]);
 
   // Creating cheerio objects.
   const $news = cheerio.load(newsDOM);
@@ -47,7 +49,16 @@ const getTracyURLS = () => {
 // @ desc Scrapes The Modesto Bee
 // @ returns updated scraped data object with new scraped data.
 const getModestoURLS = () => {
-  return ["article", "article2344"];
+  // Array to populate with article URLS
+  const articleURLS = [];
+
+  // URLS to scrape for article URLS
+  const newsURL = "https://www.modbee.com/news/";
+  const sportsURL = "https://www.modbee.com/sports/";
+
+  // Getting DOM strings for each page.
+  //const newsDOM = await axios.get(newsURL).then((res) => res.data);
+  //const sportsDOM = await axios.get(sportsURL).then((res) => res.data);
 };
 
 // @ desc Scrapes Riverbank News
