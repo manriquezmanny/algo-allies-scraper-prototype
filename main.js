@@ -1,109 +1,37 @@
 //// IMPORTS ////
 // Getting an array of scraper functions.
-const scrapers = require("./scrapers/scrapers");
+const {
+  turlockJournalScraper,
+  riponNewsScraper,
+  tracyPressScraper,
+  modestoBeeScraper,
+  riverbankNewsScraper,
+  oakdaleLeaderScraper,
+} = require("./scrapers/scrapeArticles");
 
 //// GLOBAL VARIABLE ////
-// Object Model for scraped data. Gets updated by updateData function.
-let scrapedData = {
-  turlock: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-  ripon: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-  tracy: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-  modesto: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-  riverbank: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-  oakdale: {
-    news: {
-      breakingNews: {},
-      localNews: {},
-      crime: {},
-      government: {},
-      education: {},
-    },
-    sports: {
-      highSchoolSports: {},
-      localSports: {},
-    },
-    test: false,
-  },
-};
+// Array of object articles for scraped data. Gets updated by updateData function.
+let articleArray = [];
 
 //// FUNCTIONS ////
 // Updates global variable Object Model with what each function in scrapers array returns.
-function updateData(scrapers) {
-  scrapers.forEach((scraper) => {
-    try {
-      scrapedData = scraper(scrapedData);
-    } catch (e) {
-      console.log(e.message);
-    }
-  });
+async function updateData() {
   // TODO: Write to JSON file instead of just console logging.
-  console.log(scrapedData);
+
+  const data = await Promise.all([
+    turlockJournalScraper(),
+    riponNewsScraper(),
+    tracyPressScraper(),
+    modestoBeeScraper(),
+    riverbankNewsScraper(),
+    oakdaleLeaderScraper(),
+  ]).then((allData) => allData);
+
+  for (let i = 0; i < data.length; i++) {
+    articleArray = articleArray.concat(data[i]);
+  }
+  console.log(articleArray);
 }
 
 // Updates Scraped Data object and will write to JSON file.
-updateData(scrapers);
+updateData();
