@@ -31,7 +31,9 @@ async function updateData() {
     articleArray = articleArray.concat(data[i]);
   }
   console.log(articleArray);
+  console.timeEnd();
 }
 
 // Updates Scraped Data object and will write to JSON file.
+console.time();
 updateData();

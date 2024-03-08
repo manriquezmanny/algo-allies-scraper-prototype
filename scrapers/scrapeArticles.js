@@ -16,19 +16,23 @@ const turlockJournalScraper = async () => {
   // Getting turlock article urls to iterate over and scrape.
   const urls = await getTurlockURLS();
 
+  // Getting an array of promises to pass to Promise.all(). Resolved when each url is turned into DOM string.
+  const URLpromises = urls.map((url) => {
+    return axios.get(url).then((res) => res.data);
+  });
+  // Awaiting all promises to be fulfilled before continuing to next part of code.
+  const articleDOMS = await Promise.all(URLpromises);
+
   // Creating array to push objects to.
   const arr = new Array();
 
-  // Iterating over each turlock article url to scrape data.
-  for (let i = 0; i < urls.length; i++) {
+  // Iterating over each turlock article DOM to scrape data.
+  for (let i = 0; i < articleDOMS.length; i++) {
     // const object to push
     const objectToPush = {};
 
-    // Getting article DOM string.
-    const articleDOM = await axios.get(urls[i]).then((res) => res.data);
-
     // Creating main cheerio object.
-    const $ = cheerio.load(articleDOM);
+    const $ = cheerio.load(articleDOMS[i]);
 
     // Getting needed data I could get that wasn't filled with props.
     const source = urls[i];
