@@ -1,3 +1,4 @@
+//Authors: Manuel, Mobin
 //// IMPORTS ////
 // Getting an array of scraper functions.
 const {
