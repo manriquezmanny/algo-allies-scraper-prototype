@@ -48,7 +48,7 @@ const getTracyURLS = () => {
 
 // @ desc Scrapes The Modesto Bee
 // @ returns updated scraped data object with new scraped data.
-const getModestoURLS = () => {
+const getModestoURLS = async () => {
   // Array to populate with article URLS
   const articleURLS = [];
 
@@ -57,9 +57,37 @@ const getModestoURLS = () => {
   const sportsURL = "https://www.modbee.com/sports/";
 
   // Getting DOM strings for each page.
-  //const newsDOM = await axios.get(newsURL).then((res) => res.data);
-  //const sportsDOM = await axios.get(sportsURL).then((res) => res.data);
+  const newsPromise = fetch(newsURL).then((res) => res.text());
+  const sportsPromise = fetch(sportsURL).then((res) => res.text());
+  console.log("made promises");
+
+  try {
+    const [newsDOM, sportsDOM] = await Promise.all([
+      newsPromise,
+      sportsPromise,
+    ]);
+    console.log("got doms");
+  } catch (e) {
+    console.log(`Failed to connect to modesto bee. Error: ${e.message}`);
+    return;
+  }
+
+  const $news = cheerio.load(newsDOM);
+  const $sports = cheerio.load(sportsDOM);
+
+  $news("a.image-link-macro").each((i, element) => {
+    const anchor = $news(element);
+    articleURLS.push(anchor.attr("href"));
+  });
+
+  $sports("a.image-link-macro").each((i, element) => {
+    const anchor = $sports(element);
+    articleURLS.push(anchor.attr("href"));
+  });
+  console.log(articleURLS);
+  return articleURLS;
 };
+getModestoURLS();
 
 // @ desc Scrapes Riverbank News
 // @ returns updated scraped data object with new scraped data.
