@@ -1,31 +1,20 @@
 //Authors: Manuel, Mobin
 //// IMPORTS ////
-// Getting an array of scraper functions.
-const {
-  turlockJournalScraper,
-  riponNewsScraper,
-  tracyPressScraper,
-  modestoBeeScraper,
-  riverbankNewsScraper,
-  oakdaleLeaderScraper,
-} = require("./scrapers/scrapeArticles");
+// Getting Scraper functions.
+const { modestoBeeScraper } = require("./scrapers/modestoScraper");
+const { turlockJournalScraper } = require("./scrapers/turlockScraper");
 
 //// GLOBAL VARIABLE ////
 // Array of object articles for scraped data. Gets updated by updateData function.
 let articleArray = [];
 
 //// FUNCTIONS ////
-// Updates global variable Object Model with what each function in scrapers array returns.
+// @ desc Scrapes necessary data from all news sites.
+// @ returns an array of objects where each object represents an article with the data we need as properties.
 async function updateData() {
-  // TODO: Write to JSON file instead of just console logging.
-
   const data = await Promise.all([
-    //turlockJournalScraper(),
-    riponNewsScraper(),
-    tracyPressScraper(),
+    turlockJournalScraper(),
     modestoBeeScraper(),
-    riverbankNewsScraper(),
-    oakdaleLeaderScraper(),
   ]).then((allData) => allData);
 
   for (let i = 0; i < data.length; i++) {

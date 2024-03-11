@@ -1,14 +1,37 @@
-//// IMPORTS ////
 const cheerio = require("cheerio");
 const axios = require("axios");
-const {
-  getTurlockURLS,
-  getRiponURLS,
-  getTracyURLS,
-  getModestoURLS,
-  getRiverbankURLS,
-  getOakdaleURLS,
-} = require("./scrapeArticleURLS");
+
+// @ desc Scrapes The Turlock Journal
+// @ returns array of individual article URLS.
+const getTurlockURLS = async () => {
+  // Array to return.
+  const articleURLS = [];
+
+  // Main URLS to scrape.
+  const newsURL = "https://www.turlockjournal.com/news/";
+  const sportsURL = "https://www.turlockjournal.com/sports/";
+
+  // Getting DOM strings to create cheerio objects out of.
+  const newsPromise = axios.get(newsURL).then((res) => res.data);
+  const sportsPromise = axios.get(sportsURL).then((res) => res.data);
+
+  const [newsDOM, sportsDOM] = await Promise.all([newsPromise, sportsPromise]);
+
+  // Creating cheerio objects.
+  const $news = cheerio.load(newsDOM);
+  const $sports = cheerio.load(sportsDOM);
+
+  $news("a.anvil-images__image-container").each((i, element) => {
+    const anchor = $news(element);
+    articleURLS.push(anchor.attr("href"));
+  });
+
+  $sports("a.anvil-images__image-container").each((i, element) => {
+    const anchor = $sports(element);
+    articleURLS.push(anchor.attr("href"));
+  });
+  return articleURLS;
+};
 
 // @ desc Scrapes The Turlock Journal
 // @ returns updated Scraped data object with new scraped data.
@@ -87,76 +110,4 @@ const turlockJournalScraper = async () => {
   return arr;
 };
 
-// @ desc Scrapes Ripon News
-// @ returns updated Scraped data object with new scraped data.
-const riponNewsScraper = () => {
-  return [{ ripon: "articles" }];
-};
-
-// @ desc Scrapes the Tracy Press
-// @ returns updated scraped data object with new scraped data.
-const tracyPressScraper = () => {
-  return [{ tracy: "articles" }];
-};
-
-// @ desc Scrapes The Modesto Bee
-// @ returns updated scraped data object with new scraped data.
-const modestoBeeScraper = async () => {
-  // Getting turlock article urls to iterate over and scrape.
-  const urls = await getModestoURLS();
-
-  // Getting an array of promises to pass to Promise.all(). Resolved when each url is turned into DOM string.
-  const URLpromises = urls.map((url) => {
-    return axios.get(url).then((res) => res.data);
-  });
-  // Awaiting all promises to be fulfilled before continuing to next part of code.
-  const articleDOMS = await Promise.all(URLpromises);
-
-  // Creating array to push objects to.
-  const arr = [];
-
-  // Iterating over article DOMS, creating cheerio object, and pulling data for each.
-  for (let i = 0; i < articleDOMS.length; i++) {
-    // Creating object to push data to and eventually return.
-    const objectToPush = {};
-
-    // Creating Cheerio object to get data needed.
-    const $ = cheerio.load(articleDOMS[i]).find("article.paper");
-    console.log($.text());
-
-    const source = "";
-    const publisher = "";
-    const heading = "";
-    const subheading = "";
-    const paragraphs = "";
-    const filteredParagraphs = "";
-    const author = "";
-    const date = "";
-    const image = {};
-
-    // Pushing each updated object to array.
-    arr.push(objectToPush);
-  }
-};
-
-// @ desc Scrapes Riverbank News
-// @ returns updated scraped data object with new scraped data.
-const riverbankNewsScraper = () => {
-  return [{ riverbank: "articles" }];
-};
-
-// @ desc Scrapes Oakdale Leader
-// @ returns updated scraped data object with new scraped data.
-const oakdaleLeaderScraper = () => {
-  return [{ oakdale: "myArticle" }];
-};
-
-// Exporting each webscraper.
-module.exports = {
-  turlockJournalScraper,
-  riponNewsScraper,
-  tracyPressScraper,
-  modestoBeeScraper,
-  riverbankNewsScraper,
-  oakdaleLeaderScraper,
-};
+module.exports = { turlockJournalScraper };
