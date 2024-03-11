@@ -1,6 +1,6 @@
 //// IMPORTS ////
 const cheerio = require("cheerio");
-const axios = require("axios");
+//const axios = require("axios");
 
 // @ desc Scrapes The Turlock Journal
 // @ returns array of individual article URLS.
@@ -66,28 +66,28 @@ const getModestoURLS = async () => {
       newsPromise,
       sportsPromise,
     ]);
-    console.log("got doms");
+
+    console.log("Resolved Promises");
+
+    const $news = cheerio.load(newsDOM);
+    const $sports = cheerio.load(sportsDOM);
+
+    $news("a.image-link-macro").each((i, element) => {
+      const anchor = $news(element);
+      articleURLS.push(anchor.attr("href"));
+    });
+
+    $sports("a.image-link-macro").each((i, element) => {
+      const anchor = $sports(element);
+      articleURLS.push(anchor.attr("href"));
+    });
+    console.log(articleURLS);
+    return articleURLS;
   } catch (e) {
     console.log(`Failed to connect to modesto bee. Error: ${e.message}`);
     return;
   }
-
-  const $news = cheerio.load(newsDOM);
-  const $sports = cheerio.load(sportsDOM);
-
-  $news("a.image-link-macro").each((i, element) => {
-    const anchor = $news(element);
-    articleURLS.push(anchor.attr("href"));
-  });
-
-  $sports("a.image-link-macro").each((i, element) => {
-    const anchor = $sports(element);
-    articleURLS.push(anchor.attr("href"));
-  });
-  console.log(articleURLS);
-  return articleURLS;
 };
-getModestoURLS();
 
 // @ desc Scrapes Riverbank News
 // @ returns updated scraped data object with new scraped data.

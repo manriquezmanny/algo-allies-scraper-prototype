@@ -101,8 +101,42 @@ const tracyPressScraper = () => {
 
 // @ desc Scrapes The Modesto Bee
 // @ returns updated scraped data object with new scraped data.
-const modestoBeeScraper = () => {
-  return [{ modesto: "articles" }];
+const modestoBeeScraper = async () => {
+  // Getting turlock article urls to iterate over and scrape.
+  const urls = await getModestoURLS();
+
+  // Getting an array of promises to pass to Promise.all(). Resolved when each url is turned into DOM string.
+  const URLpromises = urls.map((url) => {
+    return axios.get(url).then((res) => res.data);
+  });
+  // Awaiting all promises to be fulfilled before continuing to next part of code.
+  const articleDOMS = await Promise.all(URLpromises);
+
+  // Creating array to push objects to.
+  const arr = [];
+
+  // Iterating over article DOMS, creating cheerio object, and pulling data for each.
+  for (let i = 0; i < articleDOMS.length; i++) {
+    // Creating object to push data to and eventually return.
+    const objectToPush = {};
+
+    // Creating Cheerio object to get data needed.
+    const $ = cheerio.load(articleDOMS[i]).find("article.paper");
+    console.log($.text());
+
+    const source = "";
+    const publisher = "";
+    const heading = "";
+    const subheading = "";
+    const paragraphs = "";
+    const filteredParagraphs = "";
+    const author = "";
+    const date = "";
+    const image = {};
+
+    // Pushing each updated object to array.
+    arr.push(objectToPush);
+  }
 };
 
 // @ desc Scrapes Riverbank News

@@ -20,7 +20,7 @@ async function updateData() {
   // TODO: Write to JSON file instead of just console logging.
 
   const data = await Promise.all([
-    turlockJournalScraper(),
+    //turlockJournalScraper(),
     riponNewsScraper(),
     tracyPressScraper(),
     modestoBeeScraper(),
