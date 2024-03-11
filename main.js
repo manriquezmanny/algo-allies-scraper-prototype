@@ -19,6 +19,7 @@ let articleArray = [];
 async function updateData() {
   // TODO: Write to JSON file instead of just console logging.
 
+  /*
   const data = await Promise.all([
     turlockJournalScraper(),
     riponNewsScraper(),
@@ -31,7 +32,10 @@ async function updateData() {
   for (let i = 0; i < data.length; i++) {
     articleArray = articleArray.concat(data[i]);
   }
-  console.log(articleArray);
+  */
+  //turlockJournalScraper()
+  riponNewsScraper()
+  //console.log(articleArray);
   console.timeEnd();
 }
 
