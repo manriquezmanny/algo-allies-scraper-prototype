@@ -98,7 +98,7 @@ const turlockJournalScraper = async () => {
       const imageAlt = $(element)
         .find("img.anvil-images__background--glass")
         .attr("alt");
-      image["url"] = currentImage;
+      image["src"] = currentImage;
       image["alt"] = imageAlt;
       objectToPush["img"] = image;
     });
