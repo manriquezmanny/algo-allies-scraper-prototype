@@ -1,14 +1,11 @@
 const cheerio = require("cheerio");
 
-// Global variable for thumbnails images.
-let newsThumbnails = [];
-let sportsThumbnails = [];
-
-// @ desc Scrapes The Modesto Bee
-// @ returns updated scraped data object with new scraped data.
+// @ desc Scrapes The Modesto Bee for Article URLS.
+// @ returns array of article URLS to scrape.
 const getModestoURLS = async () => {
-  // Array to populate with article URLS
+  // Arrays to populate with URLS and thumbnails.
   const articleURLS = [];
+  const thumbnails = [];
 
   // URLS to scrape for article URLS
   const newsURL = "https://www.modbee.com/news/";
@@ -17,29 +14,19 @@ const getModestoURLS = async () => {
   // Getting DOM strings for each page.
   const newsPromise = fetch(newsURL).then((res) => res.text());
   const sportsPromise = fetch(sportsURL).then((res) => res.text());
-
   try {
     const [newsDOM, sportsDOM] = await Promise.all([
       newsPromise,
       sportsPromise,
     ]);
-
-    const $news = cheerio.load(newsDOM);
-    const $sports = cheerio.load(sportsDOM);
-
-    $news("a.image-link-macro").each((i, element) => {
-      const anchor = $news(element);
+    const articleDOMS = newsDOM.concat(sportsDOM);
+    const $ = cheerio.load(articleDOMS);
+    $("a.image-link-macro").each((i, element) => {
+      const anchor = $(element);
       articleURLS.push(anchor.attr("href"));
-      newsThumbnails.push(anchor.find("img").attr("src"));
+      thumbnails.push(anchor.find("img").attr("src"));
     });
-
-    $sports("a.image-link-macro").each((i, element) => {
-      const anchor = $sports(element);
-      articleURLS.push(anchor.attr("href"));
-      sportsThumbnails.push(anchor.find("img").attr("src"));
-    });
-
-    return articleURLS;
+    return [articleURLS, thumbnails];
   } catch (e) {
     console.log(`Failed to connect to modesto bee. Error: ${e.message}`);
     return;
@@ -49,32 +36,28 @@ const getModestoURLS = async () => {
 // @ desc Scrapes The Modesto Bee
 // @ returns updated Scraped data object with new scraped data.
 const modestoBeeScraper = async () => {
-  // Getting article urls.
-  const urls = await getModestoURLS();
-  const thumbnails = newsThumbnails.concat(sportsThumbnails);
-
-  // Turning the URLS into DOM strings
-  const urlPromises = urls.map((url) => {
-    return fetch(url).then((res) => res.text());
-  });
-
-  // Getting an array of article dom strings.
-  const articleDOMS = await Promise.all(urlPromises);
-
   // Creating an array to push articles into and return.
   const articles = [];
 
-  for (let i = 0; i < articleDOMS.length; i++) {
-    // Creating a cheerio object out of current url.
-    const $ = cheerio.load(articleDOMS[i]);
+  // Getting article URLS and turning them into DOM strings.
+  const [urls, thumbnails] = await getModestoURLS();
+  const urlPromises = urls.map((url) => {
+    return fetch(url).then((res) => res.text());
+  });
+  const articleDOMS = await Promise.all(urlPromises);
 
+  // Iterating over each article DOM, creating article object, and pushing it to articles array.
+  for (let i = 0; i < articleDOMS.length; i++) {
     const articleObject = {};
+
+    // Creating a main cheerio object out of current url.
+    const $ = cheerio.load(articleDOMS[i]);
 
     // Getting necessary data.
     const source = urls[i];
     const publisher = "The Modesto Bee";
     const heading = $("h1.h1").text().trim();
-    const category = $("a.kicker").eq(0).text().trim();
+    const subcategory = $("a.kicker").eq(0).text().trim();
     const author =
       $("div.byline").find("a").text().trim() ||
       $("div.byline").text().trim().split("\n")[0].trim() ||
@@ -85,12 +68,14 @@ const modestoBeeScraper = async () => {
     const image = {};
     image["src"] = $("img.responsive-image").eq(0).attr("srcset") || null;
     image["alt"] = $("img.responsive-image").eq(0).attr("alt") || null;
-    const filteredParagraphs = [];
+    const paragraphs = [];
     $("article")
       .find("p")
       .each((i, element) => {
         const paragraph = $(element);
-        filteredParagraphs.push(paragraph.text().trim());
+        if (paragraph.text().trim() !== "") {
+          paragraphs.push(paragraph.text().trim());
+        }
       });
 
     // Saving necessary data to object.
@@ -98,23 +83,24 @@ const modestoBeeScraper = async () => {
     articleObject["publisher"] = publisher;
     articleObject["heading"] = heading;
     articleObject["subheading"] = null;
-    articleObject["category"] = category;
+    articleObject["subcategory"] = subcategory;
     articleObject["author"] = author;
     articleObject["date"] = date;
     articleObject["image"] = image;
     articleObject["thumbnail"] = thumbnail;
-    articleObject["paragraphs"] = filteredParagraphs;
+    articleObject["paragraphs"] = paragraphs;
 
-    // Pushing current article object to articles array.
-    // NOTE: Some articles that are published seem to still be getting worked on and had no heading. I wont push those.
-
+    // Edge case: Some modesto articles had no title and were still being worked on.
     if (articleObject.heading) {
       articles.push(articleObject);
     }
   }
 
   // Returning articles array.
+  console.log(articles);
   return articles;
 };
+
+modestoBeeScraper();
 
 module.exports = { modestoBeeScraper };
