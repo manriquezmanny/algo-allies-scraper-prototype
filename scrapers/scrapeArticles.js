@@ -112,57 +112,61 @@ const riponNewsScraper = async () => {
   const arr = new Array();
   // Iterating over each Ripon article DOM to scrape data.
   for (let i = 0; i < articleDOMS.length; i++) {
-    // const object to push
-    const objectToPush = {};
-
-    // Creating main cheerio object.
     const $ = cheerio.load(articleDOMS[i]);
-
     const date = $("time.tnt-date").text().trim();
-    const author = $("a.tnt-user-name:eq(1)").text().trim();
+    
+    if (date == "Mar 12, 2024") {
+      // const object to push
+      const objectToPush = {};
 
-    // Getting needed data I could get that wasn't filled with props.
-    const source = urls[i];
-    const publisher = "Ripon Journal";
-    const heading = $("h1.headline").text();
-    const subHeading = $("h2.subhead").text().trim() || null;
-    const paragraphs = [];
-    $("div.asset-content")
-      .children()
-      .each((i, element) => {
-        const p = $(element).text().trim();
-        if (p !== "") {
-          paragraphs.push(p);
-        }
-      });
+      // Creating main cheerio object.
+      
 
-    //console.log(source);
+      const author = $("a.tnt-user-name:eq(1)").text().trim();
 
-    //console.log(publisher);
-    //console.log(heading);
-    //console.log(subHeading);
-    //console.log(paragraphs);
+      // Getting needed data I could get that wasn't filled with props.
+      const source = urls[i];
+      const publisher = "Ripon Journal";
+      const heading = $("h1.headline").text();
+      const subHeading = $("h2.subhead").text().trim() || null;
+      const paragraphs = [];
+      $("div.asset-content")
+        .children()
+        .each((i, element) => {
+          const p = $(element).text().trim();
+          if (p !== "") {
+            paragraphs.push(p);
+          }
+        });
 
-    // Saving data to an object I will push to the array of objects.
-    objectToPush["source"] = source;
-    objectToPush["publisher"] = publisher;
-    objectToPush["heading"] = heading.trim();
-    objectToPush["subHeading"] = subHeading;
-    objectToPush["author"] = author;
-    objectToPush["date"] = date;
+      //console.log(source);
 
-    // Getting the image data and saving that to objectToPush
+      //console.log(publisher);
+      //console.log(heading);
+      //console.log(subHeading);
+      //console.log(paragraphs);
 
-    const image = {};
-    const currentImage = $('meta[property="og:image"]').attr("content");
-    const imageAlt = $('meta[name="twitter:image:alt"]').attr("content");
+      // Saving data to an object I will push to the array of objects.
+      objectToPush["source"] = source;
+      objectToPush["publisher"] = publisher;
+      objectToPush["heading"] = heading.trim();
+      objectToPush["subHeading"] = subHeading;
+      objectToPush["author"] = author;
+      objectToPush["date"] = date;
 
-    image["url"] = currentImage;
-    image["alt"] = imageAlt;
+      // Getting the image data and saving that to objectToPush
 
-    objectToPush["img"] = image;
+      const image = {};
+      const currentImage = $('meta[property="og:image"]').attr("content");
+      const imageAlt = $('meta[name="twitter:image:alt"]').attr("content");
 
-    arr.push(objectToPush);
+      image["url"] = currentImage;
+      image["alt"] = imageAlt;
+
+      objectToPush["img"] = image;
+
+      arr.push(objectToPush);
+    }
   }
   console.log(arr);
   return arr;
