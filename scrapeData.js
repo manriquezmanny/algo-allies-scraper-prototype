@@ -6,6 +6,7 @@ const { turlockJournalScraper } = require("./scrapers/turlockScraper");
 const { oakdaleLeaderScraper } = require("./scrapers/oakdaleScraper");
 const { riverbankNewsScraper } = require("./scrapers/riverbankScraper");
 const { tracyPressScraper } = require("./scrapers/tracyScraper");
+const { riponScraper } = require("./scrapers/riponScraper");
 
 //// GLOBAL VARIABLE ////
 // Array of object articles for scraped data. Gets updated by updateData function.
@@ -32,6 +33,9 @@ async function scrapeData(city) {
     case "tracy":
       console.log(await tracyPressScraper());
       break;
+    case "ripon":
+      console.log(await riponScraper());
+      break;
     case "all":
       const data = await Promise.all([
         tracyPressScraper(),
@@ -39,6 +43,7 @@ async function scrapeData(city) {
         modestoBeeScraper(),
         oakdaleLeaderScraper(),
         riverbankNewsScraper(),
+        riponScraper(),
       ]).then((allData) => allData);
       for (let i = 0; i < data.length; i++) {
         articleArray = articleArray.concat(data[i]);
@@ -50,6 +55,6 @@ async function scrapeData(city) {
 }
 
 // Updates Scraped Data object and will write to JSON file.
-scrapeData("riverbank");
+scrapeData("ripon");
 
 module.exports = { scrapeData };
