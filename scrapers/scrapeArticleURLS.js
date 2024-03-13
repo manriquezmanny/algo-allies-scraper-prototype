@@ -36,8 +36,37 @@ const getTurlockURLS = async () => {
 
 // @ desc Scrapes Ripon News
 // @ returns array of individual article URLS.
-const getRiponURLS = () => {
-  return ["article1", "article2"];
+const getRiponURLS = async () => {
+  // set to return (used set to remove duplicate URLS)
+  const articleURLS = new Set();
+
+  // Main URLS to scrape.
+  const newsURL = "https://www.riponpress.com/news/";
+  const sportsURL = "https://www.riponpress.com/sports/";
+
+  // Getting DOM strings to create cheerio objects out of.
+  const newsPromise = axios.get(newsURL).then((res) => res.data);
+  const sportsPromise = axios.get(sportsURL).then((res) => res.data);
+
+  const [newsDOM, sportsDOM] = await Promise.all([newsPromise, sportsPromise]);
+
+  // Creating cheerio objects.
+  const $news = cheerio.load(newsDOM);
+  const $sports = cheerio.load(sportsDOM);
+
+  $news("a.tnt-asset-link").each((i, element) => {
+    const anchor = $news(element);
+    articleURLS.add("https://www.riponpress.com" + anchor.attr("href"));
+  });
+
+  $sports("a.tnt-asset-link").each((i, element) => {
+    const anchor = $sports(element);
+    articleURLS.add("https://www.riponpress.com" + anchor.attr("href"));
+  });
+  //console.log(articleURLS);
+
+  //turn set into an array
+  return Array.from(articleURLS);
 };
 
 // @ desc Scrapes the Tracy Press
