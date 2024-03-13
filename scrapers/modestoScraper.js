@@ -53,21 +53,22 @@ const modestoBeeScraper = async () => {
     // Creating a main cheerio object out of current url.
     const $ = cheerio.load(articleDOMS[i]);
 
-    // Getting necessary data.
-    const source = urls[i];
-    const publisher = "The Modesto Bee";
-    const heading = $("h1.h1").text().trim();
-    const subcategory = $("a.kicker").eq(0).text().trim();
+    // Getting author.
     const author =
       $("div.byline").find("a").text().trim() ||
       $("div.byline").text().trim().split("\n")[0].trim() ||
       null;
+    // Getting date.
     const date =
       $("time.update-date").text() || $("time.publish-date").text() || null;
     const thumbnail = thumbnails[i];
+
+    // Getting Image.
     const image = {};
     image["src"] = $("img.responsive-image").eq(0).attr("srcset") || null;
     image["alt"] = $("img.responsive-image").eq(0).attr("alt") || null;
+
+    // Getting Paragraphs.
     const paragraphs = [];
     $("article")
       .find("p")
@@ -78,7 +79,13 @@ const modestoBeeScraper = async () => {
         }
       });
 
-    // Saving necessary data to object.
+    // Getting more data with one-liners.
+    const source = urls[i];
+    const publisher = "The Modesto Bee";
+    const heading = $("h1.h1").text().trim();
+    const subcategory = $("a.kicker").eq(0).text().trim();
+
+    // Saving data to object.
     articleObject["source"] = source;
     articleObject["publisher"] = publisher;
     articleObject["heading"] = heading;
