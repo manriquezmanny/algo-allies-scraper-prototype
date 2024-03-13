@@ -10,7 +10,6 @@ const {
   getOakdaleURLS,
 } = require("./scrapeArticleURLS");
 
-
 // @ desc Scrapes The Turlock Journal
 // @ returns updated Scraped data object with new scraped data.
 const turlockJournalScraper = async () => {
@@ -112,7 +111,7 @@ const riponNewsScraper = async () => {
   // Creating array to push objects to.
   const arr = new Array();
   // Iterating over each Ripon article DOM to scrape data.
-  for (let i = 14; i < 15; i++) {
+  for (let i = 0; i < articleDOMS.length; i++) {
     // const object to push
     const objectToPush = {};
 
@@ -121,7 +120,6 @@ const riponNewsScraper = async () => {
 
     const date = $("time.tnt-date").text().trim();
     const author = $("a.tnt-user-name:eq(1)").text().trim();
-    
 
     // Getting needed data I could get that wasn't filled with props.
     const source = urls[i];
@@ -145,9 +143,6 @@ const riponNewsScraper = async () => {
     //console.log(subHeading);
     //console.log(paragraphs);
 
-   
-
-    
     // Saving data to an object I will push to the array of objects.
     objectToPush["source"] = source;
     objectToPush["publisher"] = publisher;
@@ -155,25 +150,19 @@ const riponNewsScraper = async () => {
     objectToPush["subHeading"] = subHeading;
     objectToPush["author"] = author;
     objectToPush["date"] = date;
-    /*
+
     // Getting the image data and saving that to objectToPush
+
     const image = {};
-    $("div.anvil-images__image-container").each((i, element) => {
-      const currentImage = $(element)
-        .find("img.anvil-images__background--glass")
-        .attr("src");
-      const imageAlt = $(element)
-        .find("img.anvil-images__background--glass")
-        .attr("alt");
-      image["url"] = currentImage;
-      image["alt"] = imageAlt;
-      objectToPush["img"] = image;
-    });
+    const currentImage = $('meta[property="og:image"]').attr("content");
+    const imageAlt = $('meta[name="twitter:image:alt"]').attr("content");
+
+    image["url"] = currentImage;
+    image["alt"] = imageAlt;
+
     objectToPush["img"] = image;
-    objectToPush["paragraphs"] = filteredParagraphs;
 
     arr.push(objectToPush);
-    */
   }
   console.log(arr);
   return arr;
