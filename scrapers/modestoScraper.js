@@ -90,6 +90,7 @@ const modestoBeeScraper = async () => {
     articleObject["publisher"] = publisher;
     articleObject["heading"] = heading;
     articleObject["subheading"] = null;
+    articleObject["category"] = getCategory(urls[i]);
     articleObject["subcategory"] = subcategory;
     articleObject["author"] = author;
     articleObject["date"] = date;
@@ -102,9 +103,20 @@ const modestoBeeScraper = async () => {
       articles.push(articleObject);
     }
   }
-
   // Returning articles array.
   return articles;
 };
+
+// @ Desc gets categories from url.
+// @ Returns category string.
+function getCategory(url) {
+  let mainCategory = "";
+  if (url.includes("https://www.modbee.com/news/")) {
+    mainCategory = "NEWS";
+  } else {
+    mainCategory = "SPORTS";
+  }
+  return mainCategory;
+}
 
 module.exports = { modestoBeeScraper };

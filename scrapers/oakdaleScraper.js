@@ -20,10 +20,10 @@ const getOakdaleURLS = async () => {
   const [newsDOM, sportsDOM] = await Promise.all([newsPromise, sportsPromise]);
   const articleDOMS = newsDOM.concat(sportsDOM);
 
-  // Creating cheerio objects out of DOM strings.
+  // Creating main cheerio objects out of DOM strings.
   const $ = cheerio.load(articleDOMS);
 
-  // Gets URLS, Categories, and thumbnails for articles.
+  // Gets URLS and thumbnails for articles.
   $("a.anvil-images__image-container").each((i, element) => {
     const anchor = $(element);
     articleURLS.push(anchor.attr("href"));
@@ -93,7 +93,7 @@ const oakdaleLeaderScraper = async () => {
     objectToPush["publisher"] = publisher;
     objectToPush["heading"] = heading.trim();
     objectToPush["subHeading"] = subHeading;
-    objectToPush["category"] = null;
+    objectToPush["category"] = getCategory(urls[i]);
     objectToPush["subcategory"] = null;
     objectToPush["author"] = author;
     objectToPush["date"] = date;
@@ -103,10 +103,19 @@ const oakdaleLeaderScraper = async () => {
 
     articles.push(objectToPush);
   }
-  console.log(articles);
   return articles;
 };
 
-oakdaleLeaderScraper();
+// @ Desc gets categories from url.
+// @ Returns category string.
+function getCategory(url) {
+  let mainCategory = "";
+  if (url.includes("https://www.oakdaleleader.com/news/")) {
+    mainCategory = "NEWS";
+  } else {
+    mainCategory = "SPORTS";
+  }
+  return mainCategory;
+}
 
 module.exports = { oakdaleLeaderScraper };

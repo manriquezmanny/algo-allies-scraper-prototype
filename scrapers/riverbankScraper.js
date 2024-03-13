@@ -21,7 +21,7 @@ const getRiverbankURLS = async () => {
   // Creating cheerio objects out of DOM strings.
   const $ = cheerio.load(articleDOMS);
 
-  // Gets URLS, Categories, and thumbnails for articles.
+  // Gets URLS and thumbnails for articles.
   $("a.anvil-images__image-container").each((i, element) => {
     const anchor = $(element);
     articleURLS.push(anchor.attr("href"));
@@ -91,7 +91,7 @@ const riverbankNewsScraper = async () => {
     objectToPush["publisher"] = publisher;
     objectToPush["heading"] = heading.trim();
     objectToPush["subHeading"] = subHeading;
-    objectToPush["category"] = null;
+    objectToPush["category"] = getCategory(urls[i]);
     objectToPush["subcategory"] = null;
     objectToPush["author"] = author;
     objectToPush["date"] = date;
@@ -103,3 +103,16 @@ const riverbankNewsScraper = async () => {
   }
   return articles;
 };
+
+// @ Desc gets categories from url.
+// @ Returns category string.
+function getCategory(url) {
+  let mainCategory = "";
+  if (url.includes("https://www.theriverbanknews.com/news/")) {
+    mainCategory = "NEWS";
+  } else {
+    mainCategory = "SPORTS";
+  }
+}
+
+module.exports = { riverbankNewsScraper };
