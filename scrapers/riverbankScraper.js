@@ -101,8 +101,5 @@ const riverbankNewsScraper = async () => {
 
     articles.push(objectToPush);
   }
-  console.log(articles);
   return articles;
 };
-
-riverbankNewsScraper();

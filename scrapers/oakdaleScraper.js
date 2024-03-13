@@ -1,16 +1,16 @@
 const cheerio = require("cheerio");
 const axios = require("axios");
 
-// @ desc Scrapes The Turlock Journal for article URLS.
+// @ desc Scrapes Oakdale Leader for article URLS.
 // @ returns array of article URLS to scrape.
-const getTurlockURLS = async () => {
+const getOakdaleURLS = async () => {
   // Arrays to return.
   const articleURLS = [];
   const thumbnails = [];
 
   // Main URLS to scrape.
-  const newsURL = "https://www.turlockjournal.com/news/";
-  const sportsURL = "https://www.turlockjournal.com/sports/";
+  const newsURL = "https://www.oakdaleleader.com/news/";
+  const sportsURL = "https://www.oakdaleleader.com/sports/";
 
   // Getting DOM strings to create cheerio objects out of.
   const newsPromise = axios.get(newsURL).then((res) => res.data);
@@ -35,13 +35,13 @@ const getTurlockURLS = async () => {
   return [articleURLS, thumbnails];
 };
 
-// @ desc Scrapes The Turlock Journal
+// @ desc Scrapes Oakdale Leader
 // @ returns updated Scraped data object with new scraped data.
-const turlockJournalScraper = async () => {
+const oakdaleLeaderScraper = async () => {
   const articles = [];
 
   // Getting an array of article DOM strings for cheerio.
-  const [urls, thumbnails] = await getTurlockURLS();
+  const [urls, thumbnails] = await getOakdaleURLS();
   const URLpromises = urls.map((url) => {
     return axios.get(url).then((res) => res.data);
   });
@@ -80,7 +80,7 @@ const turlockJournalScraper = async () => {
 
     // Getting more data that fit in single line.
     const source = urls[i];
-    const publisher = "Turlock Journal";
+    const publisher = "Oakdale Leader";
     const heading = $("div.anvil-article__title").text();
     const subHeading = $("div.anvil-article__subtitle").text().trim() || null;
     const author = jsonData.page_meta.author || paragraphs[0];
@@ -102,7 +102,10 @@ const turlockJournalScraper = async () => {
 
     articles.push(objectToPush);
   }
+  console.log(articles);
   return articles;
 };
 
-module.exports = { turlockJournalScraper };
+oakdaleLeaderScraper();
+
+module.exports = { oakdaleLeaderScraper };

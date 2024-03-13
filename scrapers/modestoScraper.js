@@ -104,10 +104,7 @@ const modestoBeeScraper = async () => {
   }
 
   // Returning articles array.
-  console.log(articles);
   return articles;
 };
-
-modestoBeeScraper();
 
 module.exports = { modestoBeeScraper };
