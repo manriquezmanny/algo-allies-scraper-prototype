@@ -189,7 +189,7 @@ function getCategories(source) {
   } else if (subcategoriesObj["LOCAL NEWS"].includes(source)) {
     category = "NEWS";
     subcategory = "LOCAL NEWS";
-  } else if (subcategoriesObj["LOCAL SPORTS"]) {
+  } else if (subcategoriesObj["LOCAL SPORTS"].includes(source)) {
     category = "SPORTS";
     subcategory = "LOCAL SPORTS";
   } else {
