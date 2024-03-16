@@ -10,10 +10,6 @@ const { riverbankNewsScraper } = require("./scrapers/riverbankScraper");
 const { tracyPressScraper } = require("./scrapers/tracyScraper");
 const { riponScraper } = require("./scrapers/riponScraper");
 
-//// GLOBAL VARIABLE ////
-// Array of object articles for scraped data. Gets updated by updateData function.
-let articleArray = [];
-
 //// FUNCTIONS ////
 // @ desc Scrapes city data or all cities if all is passed as arg.
 // @ returns an array of objects where each object represents an article with the data we need as properties.
