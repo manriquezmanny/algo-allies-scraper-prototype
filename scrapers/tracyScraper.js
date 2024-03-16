@@ -169,7 +169,9 @@ const tracyPressScraper = async () => {
     objectToPush["paragraphs"] = paragraphs;
 
     // Pushing object to articles array.
-    articles.push(objectToPush);
+    if (objectToPush.paragraphs.length != 0) {
+      articles.push(objectToPush);
+    }
   }
   return articles;
 };
