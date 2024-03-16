@@ -6,6 +6,8 @@ const subcategoriesObj = {};
 // @ desc Scrapes Oakdale Leader for article URLS.
 // @ returns URLS and Thumbnail objects.
 const getOakdaleURLS = async () => {
+  console.log("Scraping the Oakdale Leader");
+
   // Arrays to return.
   const thumbnailArr = [];
 
@@ -30,6 +32,9 @@ const getOakdaleURLS = async () => {
   const localNewsPromise = fetch(localNewsURL).then((res) => res.text());
   const localSportsPromise = fetch(localSportsURL).then((res) => res.text());
   // NOTE: Oakdale Leader doesn't have High School Sports category.
+  console.log("Created HTTP GET req promise Objects.");
+
+  // Waiting untill all promise objects resolve.
   const [crimeDOM, govDOM, edDOM, localNewsDOM, localSportsDOM] =
     await Promise.all([
       crimePromise,
@@ -38,6 +43,7 @@ const getOakdaleURLS = async () => {
       localNewsPromise,
       localSportsPromise,
     ]);
+  console.log("Resolved all HTTP GET req promise Objects");
 
   // Creating cheerio objects out of DOM strings.
   const $crime = cheerio.load(crimeDOM);
@@ -83,7 +89,7 @@ const oakdaleLeaderScraper = async () => {
     return fetch(url).then((res) => res.text());
   });
   const articleDOMS = await Promise.all(URLpromises);
-
+  console.log("Got article URL DOMS, Scraping Data...");
   // Iterating over each DOM in article DOM, and creating article object to push to articles array.
   for (let i = 0; i < articleDOMS.length; i++) {
     const objectToPush = {};
@@ -174,12 +180,9 @@ function getCategories(source) {
   } else if (subcategoriesObj["LOCAL NEWS"].includes(source)) {
     category = "NEWS";
     subcategory = "LOCAL NEWS";
-  } else if (subcategoriesObj["LOCAL SPORTS"]) {
-    category = "SPORTS";
-    subcategory = "LOCAL SPORTS";
   } else {
     category = "SPORTS";
-    subcategory = "HIGH SCHOOL SPORTS";
+    subcategory = "LOCAL SPORTS";
   }
 
   return [category, subcategory];

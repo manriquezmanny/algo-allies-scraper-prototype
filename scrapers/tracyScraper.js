@@ -5,6 +5,8 @@ subcategoriesObj = {};
 
 // @ Desc scrapes tracy press for article urls.
 const getTracyURLS = async () => {
+  console.log("Scraping The Tracy Press");
+
   // Creating sets to populate with unique URLS.
   const crimeArticleURLS = new Set();
   const govArticleURLS = new Set();
@@ -35,7 +37,7 @@ const getTracyURLS = async () => {
   const highSchoolSportsPromise = fetch(highSchoolSportsURL).then((res) =>
     res.text()
   );
-  console.log("Created Promises");
+  console.log("Creating HTTP req Promise Objects");
 
   // Getting DOM string objects for each sub category.
   const [
@@ -53,6 +55,7 @@ const getTracyURLS = async () => {
     highSchoolSportsPromise,
     localSportsPromise,
   ]);
+  console.log("Resolved HTTP get Req promise Objects.");
 
   // Creating cheerio object out of DOM strings.
   const $crime = cheerio.load(crimeDOM);
@@ -105,6 +108,7 @@ const tracyPressScraper = async () => {
       .catch((e) => `${e.message} Could not get ${url}`);
   });
   const articleDOMS = await Promise.all(URLpromises);
+  console.log("Got Article URL DOMS, Scraping Data...");
 
   // Iterating over urls, turning them to article objects, and pushing them to articles array.
   for (let i = 0; i < articleDOMS.length; i++) {

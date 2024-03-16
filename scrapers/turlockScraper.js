@@ -6,6 +6,8 @@ const subcategoriesObj = {};
 // @ desc Scrapes The Turlock Journal for article URLS.
 // @ returns array of article URLS to scrape.
 const getTurlockURLS = async () => {
+  console.log("Scraping The Turlock Journal");
+
   // Arrays to return.
   const thumbnailArr = [];
 
@@ -33,6 +35,7 @@ const getTurlockURLS = async () => {
   const localNewsPromise = fetch(localNewsURLS).then((res) => res.text());
   const localSportsPromise = fetch(localSportsURLS).then((res) => res.text());
   const highSchoolPromise = fetch(highSchoolURLS).then((res) => res.text());
+  console.log("Created HTTP GET req promise Objects.");
 
   const [crimeDOM, govDOM, edDOM, localNewsDOM, localSportsDOM, highSchoolDOM] =
     await Promise.all([
@@ -43,6 +46,7 @@ const getTurlockURLS = async () => {
       localSportsPromise,
       highSchoolPromise,
     ]);
+  console.log("Resolved HTTP GET req promise objects.");
 
   // Creating cheerio objects out of DOM strings.
   const $crime = cheerio.load(crimeDOM);
@@ -93,6 +97,7 @@ const turlockJournalScraper = async () => {
     return fetch(url).then((res) => res.text());
   });
   const articleDOMS = await Promise.all(URLpromises);
+  console.log("Got Article URL DOMS, Scraping Data...");
 
   // Iterating over each DOM in article DOM, and creating article object to push to articles array.
   for (let i = 0; i < articleDOMS.length; i++) {
@@ -153,6 +158,19 @@ const turlockJournalScraper = async () => {
   return articles;
 };
 
+// Populates URL Sets and thumbnails array according to cheerio obj passed in.
+function getURLS($, thumbnailArr, addTo) {
+  // Gets URLS and thumbnails for articles.
+  $("a.anvil-images__image-container").each((i, element) => {
+    const anchor = $(element);
+    addTo.add(anchor.attr("href"));
+    const $thumbnail = anchor.find("img.anvil-images__image--main-article");
+    const { src, alt } = $thumbnail.attr();
+    const thumbnail = { src, alt };
+    thumbnailArr.push(thumbnail);
+  });
+}
+
 // @ Desc gets categories from url.
 // @ Returns category string.
 function getCategories(source) {
@@ -180,19 +198,6 @@ function getCategories(source) {
   }
 
   return [category, subcategory];
-}
-
-// Populates URL Sets and thumbnails array according to cheerio obj passed in.
-function getURLS($, thumbnailArr, addTo) {
-  // Gets URLS and thumbnails for articles.
-  $("a.anvil-images__image-container").each((i, element) => {
-    const anchor = $(element);
-    addTo.add(anchor.attr("href"));
-    const $thumbnail = anchor.find("img.anvil-images__image--main-article");
-    const { src, alt } = $thumbnail.attr();
-    const thumbnail = { src, alt };
-    thumbnailArr.push(thumbnail);
-  });
 }
 
 module.exports = { turlockJournalScraper };
