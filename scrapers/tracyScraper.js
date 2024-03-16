@@ -5,7 +5,7 @@ subcategoriesObj = {};
 
 // @ Desc scrapes tracy press for article urls.
 const getTracyURLS = async () => {
-  // Creating sets to populate and return
+  // Creating sets to populate with unique URLS.
   const crimeArticleURLS = new Set();
   const govArticleURLS = new Set();
   const edArticleURLS = new Set();
@@ -80,8 +80,8 @@ const getTracyURLS = async () => {
   );
   subcategoriesObj["LOCAL SPORTS"] = Array.from(localSportsArticleURLS);
 
-  // Returning array of unique URL articles.
-  articles = [
+  // Returning array of unique articles URLS.
+  let articleURLS = [
     ...crimeArticleURLS,
     ...govArticleURLS,
     ...edArticleURLS,
@@ -89,7 +89,7 @@ const getTracyURLS = async () => {
     ...highSchoolSportsArticleURLS,
     ...localSportsArticleURLS,
   ];
-  return articles;
+  return articleURLS;
 };
 
 // @ desc Scrapes Oakdale Leader
@@ -197,6 +197,7 @@ function getCategories(source) {
   return [category, subcategory];
 }
 
+// Populates URL SETS based on cheerio object passed in.
 function getURLS($, addTo) {
   $("div.card-container")
     .find("a.tnt-asset-link")

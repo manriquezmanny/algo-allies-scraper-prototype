@@ -7,10 +7,9 @@ const subcategoriesObj = {};
 // @ returns array of article URLS to scrape.
 const getTurlockURLS = async () => {
   // Arrays to return.
-  let articleURLS = [];
   const thumbnailArr = [];
 
-  // Creating sets to populate and return
+  // Creating sets to populate with unique URLS
   const crimeArticleURLS = new Set();
   const govArticleURLS = new Set();
   const edArticleURLS = new Set();
@@ -71,7 +70,8 @@ const getTurlockURLS = async () => {
   );
   subcategoriesObj["LOCAL SPORTS"] = Array.from(localSportsArticleURLS);
 
-  articleURLS = [
+  // Array of unique article URLS to return.
+  let articleURLS = [
     ...crimeArticleURLS,
     ...govArticleURLS,
     ...edArticleURLS,
@@ -182,6 +182,7 @@ function getCategories(source) {
   return [category, subcategory];
 }
 
+// Populates URL Sets and thumbnails array according to cheerio obj passed in.
 function getURLS($, thumbnailArr, addTo) {
   // Gets URLS and thumbnails for articles.
   $("a.anvil-images__image-container").each((i, element) => {

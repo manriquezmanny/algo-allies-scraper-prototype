@@ -7,10 +7,9 @@ const subcategoriesObj = {};
 // @ returns URLS and Thumbnail objects.
 const getOakdaleURLS = async () => {
   // Arrays to return.
-  let articles;
   const thumbnailArr = [];
 
-  // Creating sets to populate and return
+  // Creating sets to populate with unique URLS.
   const crimeArticleURLS = new Set();
   const govArticleURLS = new Set();
   const edArticleURLS = new Set();
@@ -62,7 +61,7 @@ const getOakdaleURLS = async () => {
   subcategoriesObj["LOCAL SPORTS"] = Array.from(localSportsArticleURLS);
 
   // Creating articles array to return.
-  articles = [
+  let articleURLS = [
     ...crimeArticleURLS,
     ...govArticleURLS,
     ...edArticleURLS,
@@ -70,7 +69,7 @@ const getOakdaleURLS = async () => {
     ...localSportsArticleURLS,
   ];
 
-  return [articles, thumbnailArr];
+  return [articleURLS, thumbnailArr];
 };
 
 // @ desc Scrapes Oakdale Leader
@@ -144,6 +143,7 @@ const oakdaleLeaderScraper = async () => {
   return articles;
 };
 
+// Populates URL Sets and thumbnails array according to cheerio obj passed in.
 function getURLS($, thumbnailArr, toAdd) {
   // Gets URLS and thumbnails for articles.
   $("a.anvil-images__image-container").each((i, element) => {

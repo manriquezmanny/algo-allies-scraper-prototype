@@ -23,7 +23,7 @@ async function scrapeData(city) {
   switch (city) {
     case "turlock":
       articles = await turlockJournalScraper();
-      console.log(`Scraped ${articles.length} from Tracy Press`);
+      console.log(`Scraped ${articles.length} from The Turlock Journal`);
       await writeFile(
         path.join(process.cwd(), "articles.json"),
         JSON.stringify(articles)
@@ -31,7 +31,7 @@ async function scrapeData(city) {
       break;
     case "modesto":
       articles = await modestoBeeScraper();
-      console.log(`Scraped ${articles.length} from Tracy Press`);
+      console.log(`Scraped ${articles.length} from The Modesto Bee`);
       await writeFile(
         path.join(process.cwd(), "articles.json"),
         JSON.stringify(articles)
@@ -39,7 +39,7 @@ async function scrapeData(city) {
       break;
     case "oakdale":
       articles = await oakdaleLeaderScraper();
-      console.log(`Scraped ${articles.length} from Oakdale Leader`);
+      console.log(`Scraped ${articles.length} from The Oakdale Leader`);
       await writeFile(
         path.join(process.cwd(), "articles.json"),
         JSON.stringify(articles)
@@ -92,6 +92,6 @@ async function scrapeData(city) {
 }
 
 // Updates Scraped Data object and will write to JSON file.
-scrapeData("oakdale");
+scrapeData("tracy");
 
 module.exports = { scrapeData };
