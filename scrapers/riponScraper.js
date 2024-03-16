@@ -119,5 +119,4 @@ const riponScraper = async () => {
   return arr;
 };
 
-
 module.exports = { riponScraper };
