@@ -89,7 +89,7 @@ async function scrapeData(city = "all") {
       } catch (e) {
         console.log(`Failed to scrape Turlock. Error ${e.message}\n`);
       }
-      try {
+      /*try {
         modestoArr = await modestoBeeScraper();
         articles = [...articles, ...modestoArr];
         console.log(
@@ -98,6 +98,7 @@ async function scrapeData(city = "all") {
       } catch (e) {
         console.log(`Failed to scrape Modesto. Error: ${e.message}\n`);
       }
+      */
       try {
         oakdaleArr = await oakdaleLeaderScraper();
         articles = [...articles, ...oakdaleArr];
@@ -137,6 +138,6 @@ async function scrapeData(city = "all") {
 }
 
 // Updates Scraped Data object and will write to JSON file.
-scrapeData("tracy");
+scrapeData();
 
 module.exports = { scrapeData };

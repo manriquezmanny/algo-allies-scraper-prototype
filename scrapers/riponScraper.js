@@ -120,7 +120,9 @@ const riponScraper = async () => {
     objectToPush["image"] = image.src ? image : null;
     objectToPush["paragraphs"] = paragraphs;
 
-    articles.push(objectToPush);
+    if (articles.paragraphs.length != 0) {
+      articles.push(objectToPush);
+    }
   }
 
   return articles;
